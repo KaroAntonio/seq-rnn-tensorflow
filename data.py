@@ -157,4 +157,4 @@ def build():
 if __name__ == "__main__":
 	data,params = build()
 	print(params)
-	x,y = data.next_train()
+	x,y = data.next_train()	
