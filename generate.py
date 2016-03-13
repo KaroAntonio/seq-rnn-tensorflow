@@ -1,5 +1,5 @@
 from model import Model
-from build import get_build
+from data import build
 
 import tensorflow as tf
 from tensorflow.models.rnn import rnn, rnn_cell
@@ -10,8 +10,10 @@ LSTM RNN For Generating the Next Vector Element in a Sequence
 '''
 
 # Parameters
-data, params = get_build()
 gen_seq_len = 30
+
+# Build Data, Params
+data, params = build()
 
 print('Building Model...')
 model = Model(params)

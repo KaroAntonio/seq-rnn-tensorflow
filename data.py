@@ -1,6 +1,5 @@
 import numpy as np
 import math
-from params import get_params
 
 class Data:
 	def __init__(self, params):
@@ -9,9 +8,7 @@ class Data:
 		self.test_pointer = -1
 
 		self.batch_size = params['batch_size']
-		self.n_input = params['n_input']
-		self.seq_len = params['n_steps']
-		self.n_batches = params['n_batches']	
+		self.n_steps = params['n_steps']
 
 		self.prep_data()
 		
@@ -32,8 +29,11 @@ class Data:
 	def prep_data(self):
 		# Create Dats
 		# data is a set of sequences of shape N x batch_size
+		print('Loading Data...')
 		self.train = self.load_data()
 		self.test = self.load_data()
+
+		# n_input and n_batches should be defined here
 
 		# Prep Btches
 		self.train_x, self.train_y = self.prep_batches(self.train)
@@ -42,8 +42,8 @@ class Data:
 	def prep_batches(self, data):
 		x_data = []
 		y_data = []
-		for i in range(self.seq_len,len(data)):
-			x_data += [data[i-self.seq_len:i]]
+		for i in range(self.n_steps,len(data)):
+			x_data += [data[i-self.n_steps:i]]
 			y_data += [data[i]]
 
 		self.num_batches = len(x_data)//self.batch_size
@@ -60,7 +60,7 @@ class Data:
 
 	def zero_batch(self):
 		# Return a batch of zeros
-		x_shape = ((self.batch_size, self.seq_len, self.n_input))
+		x_shape = ((self.batch_size, self.n_steps, self.n_input))
 		y_shape = ((self.batch_size, self.n_input))
 		x = np.zeros(x_shape)
 		y = np.zeros(y_shape)
@@ -95,7 +95,9 @@ class Data:
 
 class SineData(Data):
 	def __init__(self, params):
-		Data.__init__(self, params)
+		self.n_batches = params['n_batches'] = 2
+		self.n_input = params['n_input'] = 8
+		Data.__init__(self,params)
 
 	def post_process(self, sequence):
 		# sequence 
@@ -109,7 +111,6 @@ class SineData(Data):
 	def load_data(self):
 		# seq data is one giant sequence of data, 
 		# from which x and y are taken.
-		print('Loading Data...')
 		return self.gen_wave_1()
 		
 	def gen_wave_2(self):
@@ -117,7 +118,7 @@ class SineData(Data):
 		data = []
 		num_datas = (self.n_batches*
 					self.batch_size*
-					self.seq_len*
+					self.n_steps*
 					(self.n_input/2))
 		for i in range(num_datas):
 			wave = (math.sin(i/5.)+1)/2.
@@ -130,7 +131,7 @@ class SineData(Data):
 		data = []
 		num_datas = (self.n_batches*
 					self.batch_size*
-					self.seq_len*
+					self.n_steps*
 					(self.n_input/2))
 		for i in range(num_datas):
 			wave = int((math.sin(i/5.)+1)*self.n_input/2)
@@ -139,10 +140,21 @@ class SineData(Data):
 
 		return np.array(data)
 
+def build():
+    # Define Params
+    params = {
+            'learning_rate':0.001,
+            'batch_size':20,
+            'n_steps':20,
+            'n_hidden':128,
+            }
+
+    # Set Data to your data class
+    data = SineData(params)
+
+    return data, params
+
 if __name__ == "__main__":
-	params = get_params()
-	data = SineData(params)
-	print(data.n_batches)
+	data,params = build()
+	print(params)
 	x,y = data.next_train()
-	print(x)
-	print(y)

@@ -9,13 +9,13 @@ The data class generates two inversed sine waves in order to test the capabiliti
 In order to be able to deal with n 'classes', the final layer of the output is activated by a sigmoid.  
 Since all the data is sandbox data, it doesn't need to be preprocessed or anything.  
 It's built to be modular so to work with new data, all you need to change is the Data class.  
-Network and data params are isolated into params.py for easy play.
+Network and data params are defined in the data build function.
 
-To train the model:
+#### Train
 
 	python train.py
 	
-To generate a sequence (from a zero vector sequence seed by default):
+#### Generate
 
 	python generate.py
 
