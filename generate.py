@@ -1,4 +1,4 @@
-from data_util import SeqData
+from data_util import Data
 from model import Model
 from params import *
 
@@ -15,7 +15,7 @@ params = get_params()
 gen_seq_len = 30
 
 print("Creating Data...")
-data = SeqData(params)
+data = Data(params)
 
 print('Building Model...')
 model = Model(params)
@@ -54,9 +54,6 @@ with tf.Session() as sess:
 		next_feed = np.array(gen_seq[-data.seq_len:])
 		x_feed[0] = np.array(gen_seq[-data.seq_len:])
 
-		# Covert to Binary rep
-		n_hot = [int(e+0.5) for e in _next[0]]
-		print (n_hot)
-		
+data.post_process(gen_seq)	
 
 		

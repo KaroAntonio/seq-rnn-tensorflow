@@ -1,4 +1,4 @@
-from data_util import SeqData
+from data_util import Data
 from model import Model
 from params import *
 
@@ -14,9 +14,10 @@ LSTM RNN For Predicting the Next Vector Element in a Sequence
 params = get_params()
 training_iters = 12000
 display_step = 10
+save_step = 1000
 
 print('Creating Data...')
-data = SeqData(params)
+data = Data(params)
 
 print('Building Model...')
 model = Model(params)
@@ -38,16 +39,22 @@ with tf.Session() as sess:
 
 		# Fit training using batch data
 		batch_xs, batch_ys = data.next_train()
-		feed_dict = {model.x: batch_xs, model.y: batch_ys, model.initial: istate() }
+		feed_dict = {
+				model.x: batch_xs, 
+				model.y: batch_ys, 
+				model.initial: istate() }
+
 		sess.run(model.opt, feed_dict=feed_dict)
+
+		if step % save_step == 0:
+			path = saver.save(sess, "save/model.ckpt")
+			print("Saved to "+path)
 
 		if step % display_step == 0:
 			# Calculate batch accuracy
-			feed_dict = {model.x: batch_xs, model.y: batch_ys, model.initial: istate() }
 			acc = sess.run(model.acc, feed_dict=feed_dict)
 
 			# Calculate batch loss
-			feed_dict = {model.x: batch_xs, model.y: batch_ys, model.initial: istate() }
 			loss = sess.run(model.cost, feed_dict=feed_dict)
 			print ("Iter " + str(step*params['batch_size']) + 
 					", Minibatch Loss= " + "{:.6f}".format(loss) + \
@@ -60,4 +67,3 @@ with tf.Session() as sess:
 	test_acc = sess.run(model.acc, feed_dict=feed_dict)
 	print "Testing Accuracy:", test_acc
 
-	saver.save(sess, "save/model.ckpt")
