@@ -31,6 +31,7 @@ class Data:
 		print('Loading Data...')
 		self.train = self.load_data()
 		self.test = self.load_data()
+
 		min_size = self.params['n_steps']*self.params['batch_size']
 		if len(self.train) < min_size:
 			raise Exception('Data Sequence must be of length at least n_steps*batch_size: '+ min_size)
