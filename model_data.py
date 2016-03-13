@@ -32,6 +32,7 @@ class Data:
 	def prep_data(self):
 		# Create Dats
 		# data is a set of sequences of shape N x batch_size
+		print('Loading Data...')
 		self.train = self.load_data()
 		self.test = self.load_data()
 
@@ -109,7 +110,6 @@ class SineData(Data):
 	def load_data(self):
 		# seq data is one giant sequence of data, 
 		# from which x and y are taken.
-		print('Loading Data...')
 		return self.gen_wave_1()
 		
 	def gen_wave_2(self):

@@ -1,6 +1,5 @@
-from data_util import Data
 from model import Model
-from params import *
+from build import get_build
 
 import tensorflow as tf
 from tensorflow.models.rnn import rnn, rnn_cell
@@ -11,11 +10,8 @@ LSTM RNN For Generating the Next Vector Element in a Sequence
 '''
 
 # Parameters
-params = get_params()
+data, params = get_build()
 gen_seq_len = 30
-
-print("Creating Data...")
-data = Data(params)
 
 print('Building Model...')
 model = Model(params)
