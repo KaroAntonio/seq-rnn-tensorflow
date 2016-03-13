@@ -12,7 +12,7 @@ LSTM RNN For Predicting the Next Vector Element in a Sequence
 
 # Parameters
 params = get_params()
-training_iters = 30000
+training_iters = 12000
 display_step = 10
 
 print('Creating Data...')

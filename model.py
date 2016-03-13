@@ -65,7 +65,7 @@ class Model:
 		# Cost and Optimizer
 		scel = tf.nn.sigmoid_cross_entropy_with_logits
 		ao = tf.train.AdamOptimizer
-		self.cost = tf.reduce_mean(scel(self.pred,self.y))
+		self.cost = tf.reduce_mean(scel(last,self.y))
 		self.opt = ao(learning_rate=params['learning_rate'])
 		self.opt = self.opt.minimize(self.cost)
 

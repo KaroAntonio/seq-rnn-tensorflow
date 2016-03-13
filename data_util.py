@@ -5,13 +5,11 @@ from params import *
 class SeqData:
 	def __init__(self, params):
 		self.params = params
-		self.one_hot = True	
 		self.batch_size = params['batch_size']
 		self.n_classes = params['n_input']/2
 		self.seq_len = params['n_steps']
 		self.n_batches = params['n_batches']	
-		self.n_size = self.n_classes + self.seq_len - 1 if self.one_hot else 1
-		# pointers in arrays tp be able to pass by reference
+		self.n_size = self.n_classes + self.seq_len - 1
 		self.train_pointer = -1
 		self.test_pointer = -1
 		
@@ -20,7 +18,7 @@ class SeqData:
 
 	def prep_data(self):
 		# Create Dats
-		#data is a set of sequences of len N x batch_size
+		# data is a set of sequences of shape N x batch_size
 		self.train = self.create_data()
 		self.test = self.create_data()
 
@@ -57,13 +55,12 @@ class SeqData:
 
 
 	def create_data(self):
-		#seq data is one giant sequence of data, from which x and y are taken.
+		# seq data is one giant sequence of data, from which x and y are taken.
 		return self.gen_wave_1()
 		
 	def gen_wave_2(self):
+		# Vector to vector sine wav
 		data = []
-		tokens = [i for i in range(1,self.n_classes)]
-		#self.sample_dim = sum(tokens) #the dimensions of each sample
 		self.sample_dim = self.n_classes*2
 		self.params['n_input'] = self.sample_dim
 		for i in range(self.n_batches*self.batch_size*self.seq_len*self.n_classes):
@@ -73,15 +70,13 @@ class SeqData:
 		return np.array(data)
 
 	def gen_wave_1(self):
+		# Double intersecting sine wave
 		data = []
-		tokens = [i for i in range(1,self.n_classes)]
-		#self.sample_dim = sum(tokens) #the dimensions of each sample
 		self.sample_dim = self.n_classes*2
 		self.params['n_input'] = self.sample_dim
 		for i in range(self.n_batches*self.batch_size*self.seq_len*self.n_classes):
 			wave = int((math.sin(i/5.)+1)*self.n_classes)
 			hot_wave = np.array(self.toOneHot(wave,self.sample_dim))
-			bass = np.array(self.toOneHot(2,self.sample_dim))
 			data += [hot_wave[::-1] + hot_wave]
 
 		return np.array(data)
