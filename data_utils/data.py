@@ -28,14 +28,21 @@ class Data:
 		'''
 		pass
 
+	def get_seed(self):
+		'''
+		Return seed batch
+		'''
+
 	def prep_data(self):
 		# Create Dats
 		print('Loading Data...')
 		self.train, self.test = self.load_data()
 
+		# Validate Sequence
 		min_size = self.params['n_steps']*self.params['batch_size']
-		if len(self.train) < min_size:
-			raise Exception('Data Sequence must be of length at least n_steps*batch_size: ' + str(min_size))
+		if len(self.train) < min_size or len(self.test) < min_size:
+			err_str = 'Data Sequence must be of length at least n_steps*batch_size: '
+			raise Exception(err_str + str(min_size))
 			
 		self.n_input = self.params['n_input'] = self.train.shape[1]
 		self.params['n_batches'] = self.train.shape[0]//self.batch_size
