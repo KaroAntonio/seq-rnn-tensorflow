@@ -13,6 +13,11 @@ Since all the data is sandbox data, it doesn't need to be preprocessed or anythi
 It's built to be modular so to work with new data, all you need to change is the build file.  
 Network and data params are defined in the data build function.
 
+#### Dependencies
+
+[Numpy](http://www.scipy.org/scipylib/download.html)  
+[Tensorflow](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html)
+
 #### Train
 
 	python train.py

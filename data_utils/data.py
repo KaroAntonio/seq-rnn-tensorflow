@@ -33,6 +33,11 @@ class Data:
 		Return seed batch
 		'''
 
+	def show(self):
+		'''
+		Graph or otherwise represent Data in a way that could not be done in a string repr
+		'''
+
 	def prep_data(self):
 		# Create Dats
 		print('Loading Data...')
@@ -63,8 +68,15 @@ class Data:
 		x_data = x_data[:self.num_batches * self.batch_size]
 		y_data = y_data[:self.num_batches * self.batch_size]
 
+		# Shuffle Data
+		np.random.seed(0)
+		x_data = np.random.permutation(x_data)
+		np.random.seed(0)
+		y_data = np.random.permutation(y_data)
+		
 		x = np.split(np.array(x_data),self.num_batches)
 		y = np.split(np.array(y_data),self.num_batches)
+
 		return x,y
 
 	def decode_one_hot_seq(self, one_hot_seq):
