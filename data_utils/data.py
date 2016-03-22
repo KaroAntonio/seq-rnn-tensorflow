@@ -118,3 +118,6 @@ class Data:
 		self.test_pointer = (self.test_pointer+1)%self.num_batches
 		return self.next_batch(self.test_x, self.test_y, self.test_pointer)
 
+	def __len__(self):
+		return len(self.train)
+
