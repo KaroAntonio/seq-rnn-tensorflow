@@ -12,12 +12,12 @@ def build():
 			'ckpt':None,
 			'learning_rate':0.001,
 			'batch_size':20,
-			'n_steps':20,
+			'n_steps':40,
 			'n_hidden':128,
 			'train_steps':60000,
 			'display_step':50,
 			'save_step':100,
-			'gen_steps':300,
+			'gen_steps':50,
 			}
 
 	# Set Data to your data class
@@ -31,7 +31,7 @@ class SineData(Data):
 		# postprocess a sequence in some way
 
 		sequence = np.array(sequence[self.params['n_steps']:])
-		mpimg.imsave('sequence.png',sequence)
+		mpimg.imsave('sequence.png', sequence, cmap=plt.cm.gray)
 
 		# ex. convert each vec to binary and print
 		fig = plt.figure(figsize=(10,10))
@@ -47,13 +47,20 @@ class SineData(Data):
 		'''
 		Return x, y sequences from which batches are sampled
 		'''
-		self.n_input = self.params['n_input'] = 5
+		self.n_input = self.params['n_input'] = 10
 		
-		num_samples = (100*self.n_input)
+		num_samples = (100*self.batch_size)
 
-		wave = self.gen_wave_2(num_samples)
-		return wave, wave
+		data = self.gen_wave_1(num_samples)
+		data_train = data_test = data
+		#TODO Return x,y sequences for train and test
+		return data_train, data_test
 
+	def gen_binary_addition(self,n):
+		data = []
+		for i in range(n):
+			pass
+		
 	def gen_wave_3(self,n):
 		# Vector to vector sine wav
 		data = []
@@ -70,7 +77,7 @@ class SineData(Data):
 		# Vector to vector sine wav
 		data = []
 		for i in range(n):
-			wave = (math.sin(i/10.)+1.)/4.
+			wave = (math.sin(i/10.)+1.)/2.
 			data += [(np.random.random(self.n_input)/10+wave)]
 
 		return np.array(data)

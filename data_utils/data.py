@@ -16,7 +16,7 @@ class Data:
 	def load_data(self):
 		'''
 		Return 2 numpy array of 1-d vectors 
-			of size n_input
+			of shape (-, n_input)
 			with values in range [0,1]
 			for training and testing
 		return train, test
@@ -55,38 +55,10 @@ class Data:
 		self.n_batches = self.params['n_batches']
 
 		# Prep Data - Double the train data to easily deal with batch wrap-around
-		self.train_x = self.train*2
-		self.train_y = self.train*2
-		self.test_x = self.test*2
-		self.test_y = self.test*2
-
-		# Prep Btches	
-		'''
-		self.train_x, self.train_y = self.prep_batches(self.train)
-		self.test_x, self.test_y = self.prep_batches(self.test)
-		'''
-
-	def prep_batches(self, data):
-		x_data = []
-		y_data = []
-		for i in range(self.n_steps,len(data)):
-			x_data += [data[i-self.n_steps:i]]
-			y_data += [data[i]]
-
-		self.num_batches = len(x_data)//self.batch_size
-		x_data = x_data[:self.num_batches * self.batch_size]
-		y_data = y_data[:self.num_batches * self.batch_size]
-
-		# Shuffle Data
-		np.random.seed(0)
-		x_data = np.random.permutation(x_data)
-		np.random.seed(0)
-		y_data = np.random.permutation(y_data)
-		
-		x = np.split(np.array(x_data),self.num_batches)
-		y = np.split(np.array(y_data),self.num_batches)
-
-		return x,y
+		self.train_x = np.array(list(self.train)*2)
+		self.train_y = np.array(list(self.train)*2)
+		self.test_x = np.array(list(self.test)*2)
+		self.test_y = np.array(list(self.test)*2)
 
 	def decode_one_hot_seq(self, one_hot_seq):
 		# Decodes a vector of onehots to a vector of indices
@@ -124,7 +96,7 @@ class Data:
 		for r in rands:
 			i = int(r*(len(x_data)-self.n_steps-1))
 			x_batch += [x_data[i:i+self.n_steps]]
-			y_batch += [y_data[i+self.n_steps+1]]
+			y_batch += [y_data[i+self.n_steps]]
 		return np.array(x_batch), np.array(y_batch)
 
 
