@@ -3,3 +3,4 @@ save/*
 *.npy
 *.png
 *.ckpt
+*.swp
