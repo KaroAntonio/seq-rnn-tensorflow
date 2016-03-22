@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import random
 
 class Data:
 	def __init__(self, params):
@@ -53,9 +54,17 @@ class Data:
 		self.params['n_batches'] = self.train.shape[0]//self.batch_size
 		self.n_batches = self.params['n_batches']
 
-		# Prep Btches
+		# Prep Data - Double the train data to easily deal with batch wrap-around
+		self.train_x = self.train*2
+		self.train_y = self.train*2
+		self.test_x = self.test*2
+		self.test_y = self.test*2
+
+		# Prep Btches	
+		'''
 		self.train_x, self.train_y = self.prep_batches(self.train)
 		self.test_x, self.test_y = self.prep_batches(self.test)
+		'''
 
 	def prep_batches(self, data):
 		x_data = []
@@ -104,18 +113,35 @@ class Data:
 		Return the int version of one_hot
 		'''
 		return one_hot.index(1)
-	
-	def next_batch(self, x_batches,y_batches,ptr):
-		return x_batches[ptr], y_batches[ptr]
+
+	def rand_batch(self, x_data, y_data):
+		'''
+		Return batch of sequences randomly sampled from x,y data
+		'''
+		x_batch = []
+		y_batch = []
+		rands = np.random.random(self.batch_size)
+		for r in rands:
+			i = int(r*(len(x_data)-self.n_steps-1))
+			x_batch += [x_data[i:i+self.n_steps]]
+			y_batch += [y_data[i+self.n_steps+1]]
+		return np.array(x_batch), np.array(y_batch)
+
+
+	def next_batch(self, x_data, y_data, ptr):
+		'''
+		Return the next batch pointed to by ptr
+		'''
+		return self.rand_batch(x_data,y_data)
 
 	def next_train(self):
 		#return x,y for next train batch
-		self.train_pointer = (self.train_pointer+1)%self.num_batches
+		self.train_pointer = (self.train_pointer+1)%self.n_batches
 		return self.next_batch(self.train_x, self.train_y, self.train_pointer)
 
 	def next_test(self):
 		#return x,y for next test batch
-		self.test_pointer = (self.test_pointer+1)%self.num_batches
+		self.test_pointer = (self.test_pointer+1)%self.n_batches
 		return self.next_batch(self.test_x, self.test_y, self.test_pointer)
 
 	def __len__(self):
